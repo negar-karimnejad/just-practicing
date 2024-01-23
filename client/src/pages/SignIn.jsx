@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignIn() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -14,23 +16,28 @@ function SignIn() {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/signin", {
+      await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+      }).then((res) => {
+        if (res.ok) {
+          setLoading(false);
+          setError(false);
+          navigate("/");
+        } else {
+          setLoading(false);
+          setError(true);
+        }
       });
-      const data = await res.json();
-      console.log(data);
-      setLoading(false);
-      setError(false);
     } catch (error) {
       setLoading(false);
       setError(true);
     }
   };
-  
+
   return (
     <div className="flex flex-col justify-center m-auto font-semibold md:max-w-xl px-10  md:px-0 mt-20">
       <h1 className="font-bold text-3xl mb-7 text-center text-slate-800">

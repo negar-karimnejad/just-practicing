@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -15,17 +16,22 @@ function SignUp() {
 
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/signup", {
+      await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+      }).then((res) => {
+        if (res.ok) {
+          setLoading(false);
+          setError(false);
+          navigate("/sign-in");
+        } else {
+          setLoading(false);
+          setError(true);
+        }
       });
-      const data = await res.json();
-      console.log(data);
-      setLoading(false);
-      setError(false);
     } catch (error) {
       setLoading(false);
       setError(true);
