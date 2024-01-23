@@ -39,7 +39,7 @@ function SignIn() {
       dispatch(signInFailure(error));
     }
   };
-  console.log(error);
+  
 
   return (
     <div className="flex flex-col justify-center m-auto font-semibold md:max-w-xl px-10  md:px-0 mt-20">
