@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -11,13 +13,23 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      setLoading(true);
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data);
+      setLoading(false);
+      setError(false);
+    } catch (error) {
+      setLoading(false);
+      setError(true);
+    }
   };
 
   return (
@@ -49,10 +61,11 @@ function SignUp() {
         />
 
         <button
+          disabled={loading}
           type="submit"
           className="p-3 rounded-md bg-slate-800 text-white transition-all hover:bg-slate-950"
         >
-          SIGN UP
+          {loading ? "Loading..." : "SIGN UP"}
         </button>
         <button className="p-3 rounded-md bg-red-700 text-white transition-all hover:bg-red-600">
           CONTINUE WITH GOOGLE
@@ -67,6 +80,7 @@ function SignUp() {
           </Link>{" "}
         </p>
       </form>
+      {error && <p className="text-red-700">Something went wrong!</p>}
     </div>
   );
 }
