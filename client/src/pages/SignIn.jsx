@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
 
 function SignIn() {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -15,28 +20,26 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      await fetch("/api/auth/signin", {
+      dispatch(signInStart());
+      const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      }).then((res) => {
-        if (res.ok) {
-          setLoading(false);
-          setError(false);
-          navigate("/");
-        } else {
-          setLoading(false);
-          setError(true);
-        }
       });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(signInFailure(res.statusText));
+        return;
+      }
+      dispatch(signInSuccess(data));
+      navigate("/");
     } catch (error) {
-      setLoading(false);
-      setError(true);
+      dispatch(signInFailure(error));
     }
   };
+  console.log(error);
 
   return (
     <div className="flex flex-col justify-center m-auto font-semibold md:max-w-xl px-10  md:px-0 mt-20">
@@ -78,7 +81,9 @@ function SignIn() {
           </Link>{" "}
         </p>
       </form>
-      {error && <p className="text-red-700">Something went wrong!</p>}
+      {error && (
+        <p className="text-red-700">{error || "Something went wrong!"}</p>
+      )}
     </div>
   );
 }
