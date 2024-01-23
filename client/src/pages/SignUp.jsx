@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
@@ -8,12 +8,16 @@ function SignUp() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const signUpHandler = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/api/auth/signup", formData);
-    const data = await res.json();
-    console.log(data);
+    await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
   };
 
   return (
@@ -21,7 +25,7 @@ function SignUp() {
       <h1 className="font-bold text-3xl mb-7 text-center text-slate-800">
         Sign Up
       </h1>
-      <form action="" className="flex flex-col gap-3" onSubmit={signUpHandler}>
+      <form action="" className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <input
           id="username"
           onChange={handleChange}
