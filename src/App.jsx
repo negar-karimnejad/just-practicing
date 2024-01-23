@@ -1,9 +1,13 @@
-
+import { routes } from "./routes";
+import { useRoutes } from "react-router-dom";
 
 function App() {
-  return (
-    <div className="bg-red-500">App</div>
-  )
+  const router = useRoutes(routes);
+  return(
+    <>
+    {router}
+    </>
+  );
 }
 
-export default App
+export default App;
