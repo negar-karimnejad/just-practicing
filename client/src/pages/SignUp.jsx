@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -73,9 +74,7 @@ function SignUp() {
         >
           {loading ? "Loading..." : "SIGN UP"}
         </button>
-        <button className="p-3 rounded-md bg-red-700 text-white transition-all hover:bg-red-600">
-          CONTINUE WITH GOOGLE
-        </button>
+        <OAuth />
         <p>
           Have an account?{" "}
           <Link

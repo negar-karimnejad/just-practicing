@@ -6,6 +6,7 @@ import {
   signInStart,
   signInSuccess,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -68,9 +69,7 @@ function SignIn() {
         >
           {loading ? "Loading..." : "SIGN IN"}
         </button>
-        <button className="p-3 rounded-md bg-red-700 text-white transition-all hover:bg-red-600">
-          CONTINUE WITH GOOGLE
-        </button>
+        <OAuth/>
         <p>
           Don&apos;t have an account?{" "}
           <Link
